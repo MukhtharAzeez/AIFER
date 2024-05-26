@@ -1,22 +1,32 @@
 const express = require("express");
-const { readings } = require("./readings/readings");
-const { readingsData } = require("./readings/readings.data");
-const { createMeter, addReading, getAMeterReadings, getRecommendedPricePlan, pricePlanComparisons } = require("./controller/reading.controller");
-const { recommend, compare } = require("./controller/pricePlan.controller");
-const { getReadings, setReadings } = readings(readingsData);
-
-
-require('dotenv').config()
+const {
+  createMeter,
+  getAllMeters,
+  addReading,
+  getAMeterReadings,
+  getRecommendedPricePlan,
+  pricePlanComparisons,
+  getPricingPlans,
+} = require("./controller/reading.controller");
+require("dotenv").config();
 
 const app = express();
-require("./config/db")(app)
+
+require("./config/db")(app);
+
+app.use(require('cors')())
+
 app.use(express.json());
 
 app.post("/create-meter", createMeter);
 
+app.get("/get-all-meters", getAllMeters);
+
 app.get("/readings/read/:smartMeterId", getAMeterReadings);
 
 app.post("/readings/store", addReading);
+
+app.get("/get-pricing-plans", getPricingPlans);
 
 app.get("/price-plans/recommend/:smartMeterId", getRecommendedPricePlan);
 
