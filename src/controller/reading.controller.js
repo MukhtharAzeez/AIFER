@@ -1,5 +1,5 @@
 const meterModel = require("../model/meter.model");
-const { recommend } = require("./pricePlan.controller");
+const { recommend, compare } = require("./pricePlan.controller");
 
 
 const createMeter = async (req, res) => {
@@ -53,9 +53,22 @@ const getRecommendedPricePlan = async(req, res) => {
     }
 }
 
+const pricePlanComparisons = async(req, res) => {
+    try {
+        const { smartMeterId } = req.params;
+        const readings = await meterModel.findById(smartMeterId);
+        const result = compare(readings.electricityReadings);
+        res.status(200).json({ status: "success", data: { smartMeterId, pricePlanComparisons: result}, message: "price plans sorted by cost" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ status: "error", data: null, message: error.message });
+    }
+}
+
 module.exports = {
     createMeter,
     addReading,
     getAMeterReadings,
-    getRecommendedPricePlan
+    getRecommendedPricePlan,
+    pricePlanComparisons
 }

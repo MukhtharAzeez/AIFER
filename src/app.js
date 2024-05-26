@@ -1,7 +1,7 @@
 const express = require("express");
 const { readings } = require("./readings/readings");
 const { readingsData } = require("./readings/readings.data");
-const { createMeter, addReading, getAMeterReadings, getRecommendedPricePlan } = require("./controller/reading.controller");
+const { createMeter, addReading, getAMeterReadings, getRecommendedPricePlan, pricePlanComparisons } = require("./controller/reading.controller");
 const { recommend, compare } = require("./controller/pricePlan.controller");
 const { getReadings, setReadings } = readings(readingsData);
 
@@ -18,9 +18,6 @@ app.get("/readings/read/:smartMeterId", getAMeterReadings);
 
 app.post("/readings/store", addReading);
 
-app.get("/price-plans/recommended/:smartMeterId", getRecommendedPricePlan);
+app.get("/price-plans/recommend/:smartMeterId", getRecommendedPricePlan);
 
-app.get("/price-plans/compare-all/:smartMeterId", (req, res) => {
-
-});
-
+app.get("/price-plans/compare-all/:smartMeterId", pricePlanComparisons);
