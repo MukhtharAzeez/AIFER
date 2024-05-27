@@ -5,6 +5,7 @@ const { recommend, compare } = require("./pricePlan.controller");
 
 const createMeter = async (req, res) => {
     try {
+        // Created meter_id or meter name by incrementing a number from latest meter
         const meters = await meterModel.find();
         const result = new meterModel({_id: `smart-meter-${meters.length || 0}`});
         await result.save();
@@ -28,6 +29,7 @@ const getAllMeters = async(req, res) => {
 const addReading = async(req, res) => {
     try {
         const { smartMeterId, electricityReadings } = req.body;
+        // Updating the electricityReadings array by pushing each object to the electricityReadings from the body.electricityReadings using $push and $each
         const result = await meterModel.findByIdAndUpdate(
             smartMeterId,
             { $push: { electricityReadings: { $each: electricityReadings } } },
@@ -66,6 +68,7 @@ const getRecommendedPricePlan = async(req, res) => {
         const { smartMeterId } = req.params;
         const readings = await meterModel.findById(smartMeterId);
         if (readings.electricityReadings.length === 0) return res.status(404).json({ status: "error", data: null, message: "no readings found" });
+        // Find price plans of the meter and sorting the price plans by its cost
         const result = recommend(readings.electricityReadings);
         res.status(200).json({status: "success", data: result, message: "price plans sorted by cost"});
     } catch (error) {
@@ -79,6 +82,7 @@ const pricePlanComparisons = async(req, res) => {
         const { smartMeterId } = req.params;
         const readings = await meterModel.findById(smartMeterId);
         if(readings.electricityReadings.length === 0) return res.status(404).json({status: "error", data: null, message: "no readings found"});
+        // Find The price plan of the meter
         const result = compare(readings.electricityReadings);
         res.status(200).json({ status: "success", data: { smartMeterId, pricePlanComparisons: result}, message: "price plans sorted by cost" });
     } catch (error) {
