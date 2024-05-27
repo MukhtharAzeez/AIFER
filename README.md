@@ -35,6 +35,10 @@ $ npm install
 
 Run the application which will be listening on port `8080`. There are two ways to run the application.
 
+- Create an .env file in the root and add this
+
+  MONGO_URI = 'mongodb url'
+
 - Run the application with the current code
 
   ```console
